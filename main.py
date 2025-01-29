@@ -28,6 +28,12 @@ class SQLQueryGenerator:
                 Condition:
                 {condition}
 
+                projectid:
+                {pid}
+
+                datasetid:
+                {did}
+
                 Ensure the query is:
                 - Syntactically correct
                 - Optimized for performance
@@ -83,7 +89,57 @@ def generate_sql():
     data = request.json
 
     api_key = data.get("api_key")
-    schema = data.get("schema")
+    # schema = data.get("schema")
+    pid = 'dev-kapture'
+    did = 'devDataset'
+    schema = '''
+            TABLE %s.%s.assigned_to_resolve_report (\n" +
+                        "  id INT64 NOT NULL,\n" +
+                        "  cm_id INT64,\n" +
+                        "  ticket_id STRING(256),\n" +
+                        "  ticket_status STRING(1),\n" +
+                        "  agent_id INT64,\n" +
+                        "  reopen_by_agent_id INT64,\n" +
+                        "  created_date TIMESTAMP,\n" +
+                        "  assigned_date TIMESTAMP,\n" +
+                        "  first_replied_date TIMESTAMP,\n" +
+                        "  disposed_date TIMESTAMP,\n" +
+                        "  disposition_type STRING(5),\n" +
+                        "  disposition_folder_id INT64,\n" +
+                        "  agent_replied_count INT64,\n" +
+                        "  customer_replied_count INT64,\n" +
+                        "  dispose_remark STRING,\n" +
+                        "  source STRING(1),\n" +
+                        "  is_out_of_sla BOOL,\n" +
+                        "  ticket_category STRING(1),\n" +
+                        "  type_reference STRING(100),\n" +
+                        "  task_id INT64,\n" +
+                        "  dispose_id INT64,\n" +
+                        "  current_status STRING(1),\n" +
+                        "  is_created BOOL,\n" +
+                        "  last_reply_time TIMESTAMP,\n" +
+                        "  first_customer_replied_time TIMESTAMP,\n" +
+                        "  last_customer_replied_time TIMESTAMP,\n" +
+                        "  last_reply_by INT64,\n" +
+                        "  landing_folder_id INT64,\n" +
+                        "  call_back_time TIMESTAMP,\n" +
+                        "  create_reason STRING(50),\n" +
+                        "  landing_queue STRING(50),\n" +
+                        "  last_queue STRING(50),\n" +
+                        "  is_first_assign BOOL,\n" +
+                        "  first_assign_time TIMESTAMP,\n" +
+                        "  is_resolve_without_dispose BOOL,\n" +
+                        "  agent_remark STRING,\n" +
+                        "  first_replied_by INT64,\n" +
+                        "  ticket_create_date TIMESTAMP,\n" +
+                        "  average_time FLOAT64,\n" +
+                        "  reopen_count INT64,\n" +
+                        "  email STRING(100),\n" +
+                        "  phone STRING(100),\n" +
+                        "  is_sub_task BOOL,\n" +
+                        "  is_chat_bot BOOL\n" +
+                        ") \n" +
+    '''
     condition = data.get("condition")
 
     if not api_key or not schema or not condition:
@@ -127,9 +183,6 @@ HTML_TEMPLATE = """
         <label>Hugging Face API Key:</label>
         <input type="password" name="api_key" required>
 
-        <label>Table Schema:</label>
-        <textarea name="schema" required></textarea>
-
         <label>Condition:</label>
         <textarea name="condition" required></textarea>
 
@@ -147,7 +200,4 @@ HTML_TEMPLATE = """
 </body>
 </html>
 """
-
-if __name__ == "__main__":
-    subprocess.run(["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "app:app"])
 
