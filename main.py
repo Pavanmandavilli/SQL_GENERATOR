@@ -3,6 +3,7 @@ import os
 import time
 from huggingface_hub import InferenceClient
 from functools import lru_cache
+import subprocess
 
 app = Flask(__name__)
 
@@ -148,5 +149,5 @@ HTML_TEMPLATE = """
 """
 
 if __name__ == "__main__":
-    gunicorn -w 4 -b 0.0.0.0:8000 app:app
+    subprocess.run(["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "app:app"])
 
