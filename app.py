@@ -1,11 +1,63 @@
-from flask import Flask, request, jsonify, render_template_string
 import os
+
+from flask import Flask, request, jsonify, render_template_string
 import time
 from huggingface_hub import InferenceClient
 from functools import lru_cache
-import subprocess
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
+
+# # Hardcoded API Key & Schema
+
+API_KEY = os.getenv("MISTRAL_API_KEY")
+SCHEMA = """TABLE project_id.dataset_id.assigned_to_resolve_report (
+    id INT64 NOT NULL,
+    cm_id INT64,
+    ticket_id STRING(256),
+    ticket_status STRING(1),
+    agent_id INT64,
+    reopen_by_agent_id INT64,
+    created_date TIMESTAMP,
+    assigned_date TIMESTAMP,
+    first_replied_date TIMESTAMP,
+    disposed_date TIMESTAMP,
+    disposition_type STRING(5),
+    disposition_folder_id INT64,
+    agent_replied_count INT64,
+    customer_replied_count INT64,
+    dispose_remark STRING,
+    source STRING(1),
+    is_out_of_sla BOOL,
+    ticket_category STRING(1),
+    type_reference STRING(100),
+    task_id INT64,
+    dispose_id INT64,
+    current_status STRING(1),
+    is_created BOOL,
+    last_reply_time TIMESTAMP,
+    first_customer_replied_time TIMESTAMP,
+    last_customer_replied_time TIMESTAMP,
+    last_reply_by INT64,
+    landing_folder_id INT64,
+    call_back_time TIMESTAMP,
+    create_reason STRING(50),
+    landing_queue STRING(50),
+    last_queue STRING(50),
+    is_first_assign BOOL,
+    first_assign_time TIMESTAMP,
+    is_resolve_without_dispose BOOL,
+    agent_remark STRING,
+    first_replied_by INT64,
+    ticket_create_date TIMESTAMP,
+    average_time FLOAT64,
+    reopen_count INT64,
+    email STRING(100),
+    phone STRING(100),
+    is_sub_task BOOL,
+    is_chat_bot BOOL
+)"""
 
 # Store the latest SQL query
 latest_sql_query = ""
@@ -17,22 +69,16 @@ class SQLQueryGenerator:
         self.model = model
 
     @lru_cache(maxsize=10)
-    def generate_sql(self, schema, condition):
+    def generate_sql(self, condition):
         prompt = f"""
                 You are an expert BigQuery query generator.
                 Your task is to generate a valid and optimized BigQuery SQL query based on the given table schema and condition.
 
                 Table Schema:
-                {schema}
+                {SCHEMA}
 
                 Condition:
                 {condition}
-
-                projectid:
-                {pid}
-
-                datasetid:
-                {did}
 
                 Ensure the query is:
                 - Syntactically correct
@@ -44,7 +90,7 @@ class SQLQueryGenerator:
 
                 Example format:
                 SELECT column_name 
-                FROM `project_id.dataset_id.table_name` 
+                FROM `project_id.dataset_id.assigned_to_resolve_report` 
                 WHERE condition;
                 """
 
@@ -67,15 +113,13 @@ class SQLQueryGenerator:
 def index():
     global latest_sql_query
     if request.method == "POST":
-        api_key = request.form.get("api_key")
-        schema = request.form.get("schema")
         condition = request.form.get("condition")
 
-        if not api_key or not schema or not condition:
-            return render_template_string(HTML_TEMPLATE, error="All fields are required!")
+        if not condition:
+            return render_template_string(HTML_TEMPLATE, error="Condition is required!")
 
-        sql_generator = SQLQueryGenerator(api_key)
-        latest_sql_query = sql_generator.generate_sql(schema, condition)
+        sql_generator = SQLQueryGenerator(API_KEY)
+        latest_sql_query = sql_generator.generate_sql(condition)
 
         return render_template_string(HTML_TEMPLATE, query=latest_sql_query)
 
@@ -88,29 +132,22 @@ def generate_sql():
     global latest_sql_query
     data = request.json
 
-    api_key = data.get("api_key")
-    schema = data.get("schema")
-
     condition = data.get("condition")
-    pid = 'dev-kapture'
-    did = 'devDataset'
 
-    if not api_key or not schema or not condition:
+    if not condition:
         return jsonify({"error": "Missing required parameters"}), 400
 
-    sql_generator = SQLQueryGenerator(api_key)
-    latest_sql_query = sql_generator.generate_sql(schema, condition)
+    sql_generator = SQLQueryGenerator(API_KEY)
+    latest_sql_query = sql_generator.generate_sql(condition)
     return str(latest_sql_query)
-    # return jsonify({"sql_query": latest_sql_query})
 
 
 # API Endpoint to Get the Last Generated SQL Query
 @app.route("/get_sql_query", methods=["GET"])
 def get_sql_query():
     if latest_sql_query:
-        # return jsonify({"sql_query": latest_sql_query})
         return str(latest_sql_query)
-    # return jsonify({"error": "No SQL query has been generated yet"}), 404
+    return jsonify({"error": "No SQL query has been generated yet"}), 404
 
 
 # Simple HTML Form for User Interface
@@ -133,12 +170,6 @@ HTML_TEMPLATE = """
 <body>
     <h1 style="color: red;">SQL Query Generator</h1>
     <form method="POST">
-        <label>Hugging Face API Key:</label>
-        <input type="password" name="api_key" required>
-        
-        <label>Schema:</label>
-        <textarea name="schema" required></textarea>
-
         <label>Condition:</label>
         <textarea name="condition" required></textarea>
 
@@ -156,4 +187,3 @@ HTML_TEMPLATE = """
 </body>
 </html>
 """
-
