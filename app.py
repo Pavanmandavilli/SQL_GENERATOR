@@ -73,26 +73,11 @@ class SQLQueryGenerator:
 
         pid = "dev-kapture"
         did = "demoDataset"       
-        # if "disposed_date" in condition:
-        #     try:
-        #         # Extract the date part from the condition (assuming it's in the format 'YYYY-MM-DD')
-        #         date_str = condition.split('=')[-1].strip().strip("'")
-                
-        #         # Convert the string to a datetime object
-        #         date_obj = datetime.strptime(date_str, "%Y-%m-%d")
-                
-        #         # Create the full range for the day (from 00:00:00 to 23:59:59)
-        #         start_time = date_obj.strftime("%Y-%m-%d 00:00:00")
-        #         end_time = date_obj.strftime("%Y-%m-%d 23:59:59")
-                
-        #         # Update the condition to cover the entire day
-        #         condition = f"disposed_date BETWEEN '{start_time}' AND '{end_time}'"
-        #     except Exception as e:
-        #         return f"Error processing date in condition: {e}"
         prompt = f"""
         You are an expert BigQuery query generator.
         Your task is to generate a valid and optimized BigQuery SQL query based on the given table schema and condition.And change project_id and database_id.
-
+        Condition Handling:
+        If the condition includes any of the following date columns:disposed_date, created_date, assigned_date, first_replied_date, ticket_create_date,then ensure the query filters records where the date falls between 00:00:00 and 23:59:59 of a given date using this TIMESTAMP.
         Table Schema:
         {SCHEMA}
 
@@ -115,9 +100,7 @@ class SQLQueryGenerator:
         Provide only the BigQuery SQL query as output. Do not include any explanations.
 
         Example format:
-        SELECT column_name 
-        FROM `project_id.dataset_id.assigned_to_resolve_report` 
-        WHERE condition;
+        SELECT * FROM dev-kapture.demoDataset.assigned_to_resolve_report WHERE disposed_date BETWEEN TIMESTAMP('2025-01-22 00:00:00') AND TIMESTAMP('2025-01-22 23:59:59');
         """
 
         messages = [{"role": "user", "content": prompt}]
