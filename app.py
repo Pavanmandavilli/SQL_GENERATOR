@@ -73,11 +73,20 @@ class SQLQueryGenerator:
 
         pid = "dev-kapture"
         did = "demoDataset"       
+        
         prompt = f"""
         You are an expert BigQuery query generator.
         Your task is to generate a valid and optimized BigQuery SQL query based on the given table schema and condition.And change project_id and database_id.
-        Condition Handling:
-        If the condition includes any of the following date columns:disposed_date, created_date, assigned_date, first_replied_date, ticket_create_date,then ensure the query filters records where the date falls between 00:00:00 and 23:59:59 of a given date using this TIMESTAMP.
+        ### Condition Handling:
+        If the condition includes any of the following date columns:
+        - disposed_date
+        - created_date
+        - assigned_date
+        - first_replied_date
+        - ticket_create_date
+        
+        Then, ensure the query filters records where the date falls **between 00:00:00 and 23:59:59** of the given date, using **BigQuery TIMESTAMP format**.
+        
         Table Schema:
         {SCHEMA}
 
