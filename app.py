@@ -73,6 +73,24 @@ class SQLQueryGenerator:
 
         pid = "dev-kapture"
         did = "demoDataset"
+
+        if "disposed_date" in condition:
+            try:
+                # Extract the date from the condition
+                date_str = condition.split('=')[-1].strip().strip("'")
+                
+                # Convert the string to a datetime object
+                date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+                
+                # Create the full range for the day (from 00:00:00 to 23:59:59)
+                start_time = date_obj.replace(hour=0, minute=0, second=0, microsecond=0)
+                end_time = date_obj.replace(hour=23, minute=59, second=59, microsecond=999999)
+                
+                # Update the condition to cover the entire day
+                condition = f"disposed_date BETWEEN '{start_time}' AND '{end_time}'"
+            except Exception as e:
+                return f"Error processing date in condition: {e}"
+                
         prompt = f"""
         You are an expert BigQuery query generator.
         Your task is to generate a valid and optimized BigQuery SQL query based on the given table schema and condition.And change project_id and database_id.
