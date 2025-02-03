@@ -139,7 +139,8 @@ def generate_sql():
 
     sql_generator = SQLQueryGenerator(API_KEY)
     latest_sql_query = sql_generator.generate_sql(condition)
-    return str(latest_sql_query)
+    # return str(latest_sql_query)
+    return jsonify({"query": latest_sql_query})
 
 
 # API Endpoint to Get the Last Generated SQL Query
