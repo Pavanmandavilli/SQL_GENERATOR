@@ -71,31 +71,38 @@ class SQLQueryGenerator:
     @lru_cache(maxsize=10)
     def generate_sql(self, condition):
 
-        project_id = "dev-kapture"
-        dataset_id = "demoDataset"
+        pid = "dev-kapture"
+        did = "demoDataset"
         prompt = f"""
-                You are an expert BigQuery query generator.
-                Your task is to generate a valid and optimized BigQuery SQL query based on the given table schema and condition.
+        You are an expert BigQuery query generator.
+        Your task is to generate a valid and optimized BigQuery SQL query based on the given table schema and condition.And change project_id and database_id.
 
-                Table Schema:
-                {SCHEMA}
+        Table Schema:
+        {SCHEMA}
 
-                Condition:
-                {condition}
+        Condition:
+        {condition}
+        
+        project_id:
+        {pid}
+        
+        database_id:
+        {did}
 
-                Ensure the query is:
-                - Syntactically correct
-                - Optimized for performance
-                - Uses proper BigQuery SQL syntax
-                - Includes the project ID and dataset ID in the table reference
+        Ensure the query is:
+        - Syntactically correct
+        - Optimized for performance
+        - Uses proper BigQuery SQL syntax
+        - Includes the project ID and dataset ID in the table reference
+        
 
-                Provide only the BigQuery SQL query as output. Do not include any explanations.
+        Provide only the BigQuery SQL query as output. Do not include any explanations.
 
-                Example format:
-                SELECT column_name 
-                FROM `{project_id}.{dataset_id}.assigned_to_resolve_report` 
-                WHERE condition;
-                """
+        Example format:
+        SELECT column_name 
+        FROM `project_id.dataset_id.assigned_to_resolve_report` 
+        WHERE condition;
+        """
 
         messages = [{"role": "user", "content": prompt}]
         try:
