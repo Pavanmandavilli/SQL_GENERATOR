@@ -82,8 +82,8 @@ class SQLQueryGenerator:
                 date_obj = datetime.strptime(date_str, "%Y-%m-%d")
                 
                 # Create the full range for the day (from 00:00:00 to 23:59:59)
-                start_time = date_obj.replace(hour=0, minute=0, second=0, microsecond=0)
-                end_time = date_obj.replace(hour=23, minute=59, second=59, microsecond=999999)
+                start_time = date_obj.strftime("%Y-%m-%d 00:00:00")
+                end_time = date_obj.strftime("%Y-%m-%d 23:59:59")
                 
                 # Update the condition to cover the entire day
                 condition = f"disposed_date BETWEEN '{start_time}' AND '{end_time}'"
