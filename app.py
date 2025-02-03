@@ -70,6 +70,9 @@ class SQLQueryGenerator:
 
     @lru_cache(maxsize=10)
     def generate_sql(self, condition):
+
+        project_id = "dev-kapture"
+        dataset_id = "demoDataset"
         prompt = f"""
                 You are an expert BigQuery query generator.
                 Your task is to generate a valid and optimized BigQuery SQL query based on the given table schema and condition.
@@ -90,7 +93,7 @@ class SQLQueryGenerator:
 
                 Example format:
                 SELECT column_name 
-                FROM `project_id.dataset_id.assigned_to_resolve_report` 
+                FROM `{project_id}.{dataset_id}.assigned_to_resolve_report` 
                 WHERE condition;
                 """
 
