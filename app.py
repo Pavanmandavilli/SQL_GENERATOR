@@ -81,12 +81,13 @@ class SQLQueryGenerator:
 
          ### CRITICAL TIMESTAMP VS DATE RULES:
         1. Full timestamp (when time is included):
-           Input: `2025-01-22 02:34:07`
-           MUST USE: WHERE date_column = TIMESTAMP(`2025-01-22 02:34:07`)
+           Input: '2025-01-22 02:34:07'
+           MUST USE: WHERE date_column = TIMESTAMP('2025-01-22 02:34:07')
            
-        2. Date only (when no time provided):
-           Input: `2025-01-22`
-           MUST USE: WHERE date_column BETWEEN TIMESTAMP(`2025-01-22 00:00:00`) AND TIMESTAMP(`2025-01-22 23:59:59`)
+        2. ### Date-only format:
+           Date only (e.g., 2025-01-22):
+           MUST USE: 
+           WHERE date_column **BETWEEN** TIMESTAMP('YYYY-MM-DD 00:00:00') AND TIMESTAMP('YYYY-MM-DD 23:59:59')
 
 
         ### Query Requirements:
@@ -100,11 +101,11 @@ class SQLQueryGenerator:
         For these columns: disposed_date, created_date, assigned_date, first_replied_date, ticket_create_date
         Timestamp format:
         - Full timestamp (e.g., 2025-01-22 02:34:07):
-          WHERE date_column = TIMESTAMP(`2025-01-22 02:34:07`)
+          WHERE date_column = TIMESTAMP('2025-01-22 02:34:07')
     
         Date-only format:
         - Date only (e.g., 2025-01-22):
-          WHERE date_column BETWEEN TIMESTAMP(`2025-01-22 00:00:00`) AND TIMESTAMP(`2025-01-22 23:59:59`)
+          WHERE date_column BETWEEN TIMESTAMP('2025-01-22 00:00:00') AND TIMESTAMP('2025-01-22 23:59:59')
     
         Notes:
         - Always interpret `created date` as created_date
