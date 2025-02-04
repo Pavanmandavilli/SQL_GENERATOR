@@ -96,7 +96,6 @@ class SQLQueryGenerator:
         **"Select created_date based on disposed_date 2025-01-22 02:34:07"**
 
         #### Expected Query Format:
-        ```sql
         SELECT created_date
         FROM `{pid}.{did}.assigned_to_resolve_report`
         WHERE disposed_date = TIMESTAMP('2025-01-22 02:34:07');
@@ -121,7 +120,6 @@ class SQLQueryGenerator:
         - Includes the project ID and dataset ID in the table reference
         
         Provide only the BigQuery SQL query as output. Do not include any explanations.
-        """
 
         messages = [{"role": "user", "content": prompt}]
         try:
