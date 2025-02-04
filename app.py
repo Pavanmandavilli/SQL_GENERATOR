@@ -90,10 +90,7 @@ class SQLQueryGenerator:
         If the user provides a specific timestamp (e.g., **2025-01-22 02:34:07**), generate the query to filter by that exact timestamp (i.e., exact time match).
         If the user provides only a date (e.g., **2025-01-22**), generate the query to filter between **00:00:00** and **23:59:59** of that date.
 
-        If the condition mentions **created date**, consider it as **create_date**.
-
-        #### Example Condition:
-        **"Select created_date based on disposed_date 2025-01-22 02:34:07"**
+        If the condition mentions **created date**, consider it as **created_date**.
 
         Table Schema:
         {SCHEMA}
