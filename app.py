@@ -79,13 +79,14 @@ class SQLQueryGenerator:
         You are an expert BigQuery query generator.
         Your task is to generate a valid and optimized BigQuery SQL query based on the given table schema and condition.And change project_id and database_id.
 
-        ### CRITICAL DATE HANDLING RULES:
-        When a date without time is provided (e.g., "2025-01-22"):
-        - ALWAYS use BETWEEN with 00:00:00 AND 23:59:59
-        - NEVER use a single timestamp
-        - NEVER use OR conditions
-        - WRONG: WHERE date_column = TIMESTAMP('2025-01-22 00:00:00')
-        - CORRECT: WHERE date_column BETWEEN TIMESTAMP('2025-01-22 00:00:00') AND TIMESTAMP('2025-01-22 23:59:59')
+         ### CRITICAL TIMESTAMP VS DATE RULES:
+        1. Full timestamp (when time is included):
+           Input: `2025-01-22 02:34:07`
+           MUST USE: WHERE date_column = TIMESTAMP(`2025-01-22 02:34:07`)
+           
+        2. Date only (when no time provided):
+           Input: `2025-01-22`
+           MUST USE: WHERE date_column BETWEEN TIMESTAMP(`2025-01-22 00:00:00`) AND TIMESTAMP(`2025-01-22 23:59:59`)
 
         Table Schema:
         {SCHEMA}
