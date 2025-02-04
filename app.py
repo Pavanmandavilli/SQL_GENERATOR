@@ -78,6 +78,7 @@ class SQLQueryGenerator:
         prompt = f"""
         You are an expert BigQuery query generator.
         Your task is to generate a valid and optimized BigQuery SQL query based on the given table schema and condition.And change project_id and database_id.
+        Ensure column names exactly match those in the schema and do not split words when generating queries.
         
         ### Condition Handling:
         If the condition includes any of the following date columns:
