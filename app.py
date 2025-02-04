@@ -135,6 +135,14 @@ class SQLQueryGenerator:
         AND ticket_status = `O`
         AND created_date > TIMESTAMP(`2025-01-01 00:00:00`);
 
+        Ensure the query is:
+        - Syntactically correct
+        - Optimized for performance
+        - Uses proper BigQuery SQL syntax
+        - Includes the project ID and dataset ID in the table reference
+        
+        Provide only the BigQuery SQL query as output. Do not include any explanations.
+
         """
         
         Condition:
@@ -146,13 +154,6 @@ class SQLQueryGenerator:
         database_id:
         {did}
 
-        Ensure the query is:
-        - Syntactically correct
-        - Optimized for performance
-        - Uses proper BigQuery SQL syntax
-        - Includes the project ID and dataset ID in the table reference
-        
-        Provide only the BigQuery SQL query as output. Do not include any explanations.
 
         messages = [{"role": "user", "content": prompt}]
         try:
