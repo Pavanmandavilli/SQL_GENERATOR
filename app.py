@@ -124,14 +124,6 @@ class SQLQueryGenerator:
         FROM `{pid}.{did}.assigned_to_resolve_report`
         GROUP BY ticket_status, agent_id;
     
-        Example 3 - Multiple conditions:
-        Condition: `Find all tickets assigned to agent_id 123 with status `O` created after 2025-01-01`
-        SELECT *
-        FROM `{pid}.{did}.assigned_to_resolve_report`
-        WHERE agent_id = 123
-        AND ticket_status = `O`
-        AND created_date > TIMESTAMP(`2025-01-01 00:00:00`);
-
         Ensure the query is:
         - Syntactically correct
         - Optimized for performance
