@@ -92,26 +92,40 @@ class SQLQueryGenerator:
     
         ### Date Column Handling:
         For these columns: disposed_date, created_date, assigned_date, first_replied_date, ticket_create_date
-        - For exact timestamp (e.g., 2025-01-22 02:34:07): use exact match
-        - For date only (e.g., 2025-01-22): use BETWEEN with 00:00:00 and 23:59:59
-        - `created date` should be interpreted as `created_date`
+        Timestamp format:
+        - Full timestamp (e.g., 2025-01-22 02:34:07):
+          WHERE date_column = TIMESTAMP('2025-01-22 02:34:07')
+    
+        Date-only format:
+        - Date only (e.g., 2025-01-22):
+          WHERE date_column BETWEEN TIMESTAMP('2025-01-22 00:00:00') AND TIMESTAMP('2025-01-22 23:59:59')
+    
+        Notes:
+        - Always interpret "created date" as created_date
+        - Use single quotes for TIMESTAMP values
+        - Include full timestamp precision
     
         ### Example Queries:
-        1. Condition: `Show me ticket_id and status for tickets created on 2025-01-22`
-        SELECT ticket_id, ticket_status
+        Example 1 - Specific columns with date:
+        Condition: "Get ticket_id and agent_id for tickets created on 2025-01-22"
+        SELECT ticket_id, agent_id
         FROM `{pid}.{did}.assigned_to_resolve_report`
-        WHERE created_date BETWEEN TIMESTAMP(`2025-01-22 00:00:00`) AND TIMESTAMP(`2025-01-22 23:59:59`);
+        WHERE created_date BETWEEN TIMESTAMP('2025-01-22 00:00:00') AND TIMESTAMP('2025-01-22 23:59:59');
     
-        2. Condition: `Count tickets by status`
-        SELECT ticket_status, COUNT(*) as count
+        Example 2 - Aggregation:
+        Condition: "Count tickets by status and agent_id"
+        SELECT ticket_status, agent_id, COUNT(*) as ticket_count
         FROM `{pid}.{did}.assigned_to_resolve_report`
-        GROUP BY ticket_status;
+        GROUP BY ticket_status, agent_id;
     
-        3. Condition: `Get all fields for high priority tickets assigned at 2025-01-22 14:30:00`
+        Example 3 - Multiple conditions:
+        Condition: "Find all tickets assigned to agent_id 123 with status 'O' created after 2025-01-01"
         SELECT *
         FROM `{pid}.{did}.assigned_to_resolve_report`
-        WHERE assigned_date = TIMESTAMP(`2025-01-22 14:30:00`);
-    
+        WHERE agent_id = 123
+        AND ticket_status = 'O'
+        AND created_date > TIMESTAMP('2025-01-01 00:00:00');
+        
         Condition:
         {condition}
         
