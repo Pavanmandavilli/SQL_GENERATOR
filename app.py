@@ -134,6 +134,8 @@ class SQLQueryGenerator:
         WHERE agent_id = 123
         AND ticket_status = `O`
         AND created_date > TIMESTAMP(`2025-01-01 00:00:00`);
+
+        """
         
         Condition:
         {condition}
@@ -151,7 +153,6 @@ class SQLQueryGenerator:
         - Includes the project ID and dataset ID in the table reference
         
         Provide only the BigQuery SQL query as output. Do not include any explanations.
-        """
 
         messages = [{"role": "user", "content": prompt}]
         try:
