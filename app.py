@@ -87,11 +87,14 @@ class SQLQueryGenerator:
         - first_replied_date
         - ticket_create_date
 
-        suppose, if example condition has like this **select created date based on dispose date 2025-01-22 00:00:00**. then give the data on particular timestamp.then i want query like this **SELECT created_date\nFROM `dev-kapture.demoDataset.assigned_to_resolve_report`\nWHERE DISPOSED_DATE = TIMESTAMP(`2025-01-22 10:10:10`);**
-        
-        
-        Then, ensure the query filters records where the date falls **between 00:00:00 and 23:59:59** of the given date, using **BigQuery TIMESTAMP format**.
+        If the user provides a specific timestamp (e.g., **2025-01-22 10:10:10**), generate the query to filter by that exact timestamp.
+        If the user provides only a date (e.g., **2025-01-22**), generate the query to filter between **00:00:00** and **23:59:59** of that date.
 
+        If the condition mentions **created date**, consider it as **create_date**.
+
+        #### Example Condition:
+        **"Select created_date based on disposed_date 2025-01-22 00:00:00"**
+        
 
         Table Schema:
         {SCHEMA}
