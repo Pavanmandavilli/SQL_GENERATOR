@@ -78,6 +78,8 @@ class SQLQueryGenerator:
         prompt = f"""
         You are an expert BigQuery query generator.
         Your task is to generate a valid and optimized BigQuery SQL query based on the given table schema and condition.And change project_id and database_id.
+        Ensure column names exactly match those in the schema and do not split words when generating queries.
+        
         ### Condition Handling:
         If the condition includes any of the following date columns:
         - disposed_date
@@ -88,6 +90,10 @@ class SQLQueryGenerator:
         
         Then, ensure the query filters records where the date falls **between 00:00:00 and 23:59:59** of the given date, using **BigQuery TIMESTAMP format**.
 
+
+        ### Important Rules:
+        - Use exact column names as defined in the schema.
+        - If the user provides a column name with spaces (e.g., "created date"), assume they mean "created_date".
         
         Table Schema:
         {SCHEMA}
