@@ -93,7 +93,7 @@ class SQLQueryGenerator:
         If the condition mentions **created date**, consider it as **create_date**.
 
         #### Example Condition:
-        **"Select created_date based on disposed_date 2025-01-22 00:00:00"**
+        **"Select created_date based on disposed_date 2025-01-22 00:00:00"** , then query should be considered as select created_date from dev-kapture.demoDataset.assigned_to_resolve_report WHERE disposed_date = 2025-01-22 10:10:10.
         
 
         Table Schema:
