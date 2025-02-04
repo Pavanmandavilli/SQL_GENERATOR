@@ -86,6 +86,10 @@ class SQLQueryGenerator:
         - assigned_date
         - first_replied_date
         - ticket_create_date
+
+        suppose, if example condition has like this **select created date based on dispose date 2025-01-22**. then consider only created date column only not the all data.
+        suppose, if example condition has like this **select created date based on dispose date 2025-01-22 00:00:00**. then give the data on particular timestamp.
+        
         
         Then, ensure the query filters records where the date falls **between 00:00:00 and 23:59:59** of the given date, using **BigQuery TIMESTAMP format**.
 
