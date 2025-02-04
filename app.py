@@ -79,24 +79,57 @@ class SQLQueryGenerator:
         You are an expert BigQuery query generator.
         Your task is to generate a valid and optimized BigQuery SQL query based on the given table schema and condition.And change project_id and database_id.
         
-        ### Condition Handling:
-        If the condition includes any of the following date columns:
-        - disposed_date
-        - created_date
-        - assigned_date
-        - first_replied_date
-        - ticket_create_date
+        # ### Condition Handling:
+        # If the condition includes any of the following date columns:
+        # - disposed_date
+        # - created_date
+        # - assigned_date
+        # - first_replied_date
+        # - ticket_create_date
 
-        If the user provides a specific timestamp (e.g., **2025-01-22 02:34:07**), generate the query to filter by that exact timestamp (i.e., exact time match).
-        If the user provides only a date (e.g., **2025-01-22**), generate the query to filter between **00:00:00** and **23:59:59** of that date.
+        # If the user provides a specific timestamp (e.g., **2025-01-22 02:34:07**), generate the query to filter by that exact timestamp (i.e., exact time match).
+        # If the user provides only a date (e.g., **2025-01-22**), generate the query to filter between **00:00:00** and **23:59:59** of that date.
 
-        If the condition mentions **created date**, consider it as **created_date**.
+        # If the condition mentions **created date**, consider it as **created_date**.
+
+
+        ### Query Requirements:
+        1. Use the specified project_id ({pid}) and dataset_id ({did})
+        2. Only select columns that are specifically requested in the condition
+        3. If no specific columns are mentioned, then use SELECT *
+        4. Apply appropriate WHERE clauses based on the condition
+        5. Use proper BigQuery SQL syntax and optimization
+    
+        ### Date Column Handling:
+        For these columns: disposed_date, created_date, assigned_date, first_replied_date, ticket_create_date
+        - For exact timestamp (e.g., 2025-01-22 02:34:07): use exact match
+        - For date only (e.g., 2025-01-22): use BETWEEN with 00:00:00 and 23:59:59
+        - "created date" should be interpreted as "created_date"
+    
+        ### Example Queries:
+        1. Condition: "Show me ticket_id and status for tickets created on 2025-01-22"
+        SELECT ticket_id, ticket_status
+        FROM `{pid}.{did}.assigned_to_resolve_report`
+        WHERE created_date BETWEEN TIMESTAMP('2025-01-22 00:00:00') AND TIMESTAMP('2025-01-22 23:59:59');
+    
+        2. Condition: "Count tickets by status"
+        SELECT ticket_status, COUNT(*) as count
+        FROM `{pid}.{did}.assigned_to_resolve_report`
+        GROUP BY ticket_status;
+    
+        3. Condition: "Get all fields for high priority tickets assigned at 2025-01-22 14:30:00"
+        SELECT *
+        FROM `{pid}.{did}.assigned_to_resolve_report`
+        WHERE assigned_date = TIMESTAMP('2025-01-22 14:30:00');
+    
+        Condition:
+        {condition}
 
         Table Schema:
         {SCHEMA}
 
-        Condition:
-        {condition}
+        # Condition:
+        # {condition}
         
         project_id:
         {pid}
@@ -112,8 +145,8 @@ class SQLQueryGenerator:
         
         Provide only the BigQuery SQL query as output. Do not include any explanations.
 
-        #### Expected Query Format:
-        SELECT * FROM `{pid}.{did}.assigned_to_resolve_report`WHERE disposed_date = TIMESTAMP('2025-01-22 02:34:07');
+        # #### Expected Format:
+        # SELECT * FROM `{pid}.{did}.assigned_to_resolve_report`WHERE disposed_date = TIMESTAMP('2025-01-22 02:34:07');
         """
 
         messages = [{"role": "user", "content": prompt}]
