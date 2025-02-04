@@ -98,33 +98,33 @@ class SQLQueryGenerator:
     
         Date-only format:
         - Date only (e.g., 2025-01-22):
-          WHERE date_column BETWEEN TIMESTAMP('2025-01-22 00:00:00') AND TIMESTAMP('2025-01-22 23:59:59')
+          WHERE date_column BETWEEN TIMESTAMP(`2025-01-22 00:00:00`) AND TIMESTAMP(`2025-01-22 23:59:59`)
     
         Notes:
-        - Always interpret "created date" as created_date
+        - Always interpret `created date` as created_date
         - Use single quotes for TIMESTAMP values
         - Include full timestamp precision
     
         ### Example Queries:
         Example 1 - Specific columns with date:
-        Condition: "Get ticket_id and agent_id for tickets created on 2025-01-22"
+        Condition: `Get ticket_id and agent_id for tickets created on 2025-01-22`
         SELECT ticket_id, agent_id
         FROM `{pid}.{did}.assigned_to_resolve_report`
-        WHERE created_date BETWEEN TIMESTAMP('2025-01-22 00:00:00') AND TIMESTAMP('2025-01-22 23:59:59');
+        WHERE created_date BETWEEN TIMESTAMP(`2025-01-22 00:00:00`) AND TIMESTAMP(`2025-01-22 23:59:59`);
     
         Example 2 - Aggregation:
-        Condition: "Count tickets by status and agent_id"
+        Condition: `Count tickets by status and agent_id`
         SELECT ticket_status, agent_id, COUNT(*) as ticket_count
         FROM `{pid}.{did}.assigned_to_resolve_report`
         GROUP BY ticket_status, agent_id;
     
         Example 3 - Multiple conditions:
-        Condition: "Find all tickets assigned to agent_id 123 with status 'O' created after 2025-01-01"
+        Condition: `Find all tickets assigned to agent_id 123 with status `O` created after 2025-01-01`
         SELECT *
         FROM `{pid}.{did}.assigned_to_resolve_report`
         WHERE agent_id = 123
-        AND ticket_status = 'O'
-        AND created_date > TIMESTAMP('2025-01-01 00:00:00');
+        AND ticket_status = `O`
+        AND created_date > TIMESTAMP(`2025-01-01 00:00:00`);
         
         Condition:
         {condition}
