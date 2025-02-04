@@ -67,32 +67,10 @@ class SQLQueryGenerator:
     def __init__(self, api_key, model="mistralai/Mistral-7B-Instruct-v0.3"):
         self.client = InferenceClient(token=api_key)
         self.model = model
-        self.valid_columns = self.extract_columns()
 
-
-    def extract_columns(self):
-        """Extracts column names from the SCHEMA string."""
-        pattern = r"\s*(\w+)\s+[A-Z]+\s*"  # Matches column names before data types
-        columns = re.findall(pattern, SCHEMA)
-        return set(columns)  # Use a set for quick lookups
-
-    def validate_condition(self, condition):
-        """Checks if all referenced columns exist in the schema."""
-        words = re.findall(r"\b\w+\b", condition)  # Extract words
-        invalid_columns = [col for col in words if col.lower() not in {c.lower() for c in self.valid_columns}]
-        
-        if invalid_columns:
-            return False, f"Warning: The following column(s) are not present in the schema: {', '.join(invalid_columns)}"
-        
-        return True, None
-
+    
     @lru_cache(maxsize=10)
     def generate_sql(self, condition):
-
-         """Generates SQL query only if the condition is valid."""
-        is_valid, warning = self.validate_condition(condition)
-        if not is_valid:
-            return warning  # Return the warning instead of generating SQL
 
         pid = "dev-kapture"
         did = "demoDataset"       
