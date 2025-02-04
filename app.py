@@ -78,7 +78,6 @@ class SQLQueryGenerator:
         prompt = f"""
         You are an expert BigQuery query generator.
         Your task is to generate a valid and optimized BigQuery SQL query based on the given table schema and condition.And change project_id and database_id.
-        Ensure column names exactly match those in the schema and do not split words when generating queries.
         
         ### Condition Handling:
         If the condition includes any of the following date columns:
@@ -103,9 +102,6 @@ class SQLQueryGenerator:
         database_id:
         {did}
 
-        ### Important Rules:
-        - Use exact column names as defined in the schema.
-        - If the user provides a column name with spaces (e.g., "created date"), assume they mean "created_date".
         Ensure the query is:
         - Syntactically correct
         - Optimized for performance
@@ -115,9 +111,8 @@ class SQLQueryGenerator:
         Provide only the BigQuery SQL query as output. Do not include any explanations.
         """
 
-        Ensure the query strictly follows the schema without misinterpreting field names.
         Example format:
-        SELECT created_date FROM dev-kapture.demoDataset.assigned_to_resolve_report WHERE disposed_date BETWEEN TIMESTAMP('2025-01-22 00:00:00') AND TIMESTAMP('2025-01-22 23:59:59');
+        SELECT * FROM dev-kapture.demoDataset.assigned_to_resolve_report WHERE disposed_date BETWEEN TIMESTAMP('2025-01-22 00:00:00') AND TIMESTAMP('2025-01-22 23:59:59');        
         """
 
         messages = [{"role": "user", "content": prompt}]
