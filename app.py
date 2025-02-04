@@ -88,9 +88,6 @@ class SQLQueryGenerator:
            Input: `2025-01-22`
            MUST USE: WHERE date_column BETWEEN TIMESTAMP(`2025-01-22 00:00:00`) AND TIMESTAMP(`2025-01-22 23:59:59`)
 
-        Table Schema:
-        {SCHEMA}
-
 
         ### Query Requirements:
         1. Use the specified project_id ({pid}) and dataset_id ({did})
@@ -103,7 +100,7 @@ class SQLQueryGenerator:
         For these columns: disposed_date, created_date, assigned_date, first_replied_date, ticket_create_date
         Timestamp format:
         - Full timestamp (e.g., 2025-01-22 02:34:07):
-          WHERE date_column = TIMESTAMP('2025-01-22 02:34:07')
+          WHERE date_column = TIMESTAMP(`2025-01-22 02:34:07`)
     
         Date-only format:
         - Date only (e.g., 2025-01-22):
@@ -141,9 +138,9 @@ class SQLQueryGenerator:
         - Uses proper BigQuery SQL syntax
         - Includes the project ID and dataset ID in the table reference
         
-        Provide only the BigQuery SQL query as output. Do not include any explanations.
-
-        """
+        
+        Table Schema:
+        {SCHEMA}
         
         Condition:
         {condition}
@@ -153,6 +150,10 @@ class SQLQueryGenerator:
         
         database_id:
         {did}
+
+        Provide only the BigQuery SQL query as output without any markdown symbols, formatting and not include any explanations.
+        
+        """
 
 
         messages = [{"role": "user", "content": prompt}]
