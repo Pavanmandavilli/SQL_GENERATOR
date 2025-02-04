@@ -87,6 +87,10 @@ class SQLQueryGenerator:
         - ticket_create_date
         
         Then, ensure the query filters records where the date falls **between 00:00:00 and 23:59:59** of the given date, using **BigQuery TIMESTAMP format**.
+
+        ### Schema Validation:
+        If the condition contains any column that is **not present** in the given schema, return a warning message like:
+        "Warning: The following column(s) are not present in the schema: column_name_1, column_name_2"
         
         Table Schema:
         {SCHEMA}
