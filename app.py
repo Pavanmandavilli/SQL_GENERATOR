@@ -110,8 +110,9 @@ class SQLQueryGenerator:
         - Uses proper BigQuery SQL syntax
         - Includes the project ID and dataset ID in the table reference
         
-
-        Provide only the BigQuery SQL query as output. Do not include any explanations.
+        If any column in the condition is invalid, return only the warning message.
+        Otherwise, provide only the BigQuery SQL query as output without explanations.
+        """
 
         Example format:
         SELECT * FROM dev-kapture.demoDataset.assigned_to_resolve_report WHERE disposed_date BETWEEN TIMESTAMP('2025-01-22 00:00:00') AND TIMESTAMP('2025-01-22 23:59:59');
