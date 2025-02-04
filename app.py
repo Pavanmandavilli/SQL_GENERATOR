@@ -113,16 +113,7 @@ class SQLQueryGenerator:
         Provide only the BigQuery SQL query as output. Do not include any explanations.
 
         #### Expected Query Format:
-        If the condition has a timestamp (e.g., **2025-01-22 02:34:07**):
-        SELECT *
-        FROM `{pid}.{did}.assigned_to_resolve_report`
-        WHERE disposed_date = TIMESTAMP('2025-01-22 02:34:07');
-    
-        If the condition only mentions a date (e.g., **2025-01-22**):
-        SELECT *
-        FROM `{pid}.{did}.assigned_to_resolve_report`
-        WHERE disposed_date BETWEEN TIMESTAMP('2025-01-22 00:00:00') AND TIMESTAMP('2025-01-22 23:59:59');
-        
+        SELECT * FROM `{pid}.{did}.assigned_to_resolve_report`WHERE disposed_date = TIMESTAMP('2025-01-22 02:34:07');
         """
 
         messages = [{"role": "user", "content": prompt}]
