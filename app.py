@@ -87,13 +87,19 @@ class SQLQueryGenerator:
         - first_replied_date
         - ticket_create_date
 
-        If the user provides a specific timestamp (e.g., **2025-01-22 10:10:10**), generate the query to filter by that exact timestamp.
+        If the user provides a specific timestamp (e.g., **2025-01-22 02:34:07**), generate the query to filter by that exact timestamp (i.e., exact time match).
         If the user provides only a date (e.g., **2025-01-22**), generate the query to filter between **00:00:00** and **23:59:59** of that date.
 
         If the condition mentions **created date**, consider it as **create_date**.
 
         #### Example Condition:
-        **"Select created_date based on disposed_date 2025-01-22 00:00:00"** , then query should be considered as select created_date from dev-kapture.demoDataset.assigned_to_resolve_report WHERE disposed_date = 2025-01-22 10:10:10.
+        **"Select created_date based on disposed_date 2025-01-22 02:34:07"**
+
+        #### Expected Query Format:
+        ```sql
+        SELECT created_date
+        FROM `{pid}.{did}.assigned_to_resolve_report`
+        WHERE disposed_date = TIMESTAMP('2025-01-22 02:34:07');
         
 
         Table Schema:
@@ -115,10 +121,6 @@ class SQLQueryGenerator:
         - Includes the project ID and dataset ID in the table reference
         
         Provide only the BigQuery SQL query as output. Do not include any explanations.
-        """
-
-        Example format:
-        SELECT * FROM dev-kapture.demoDataset.assigned_to_resolve_report WHERE disposed_date BETWEEN TIMESTAMP('2025-01-22 00:00:00') AND TIMESTAMP('2025-01-22 23:59:59');        
         """
 
         messages = [{"role": "user", "content": prompt}]
