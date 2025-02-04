@@ -114,8 +114,9 @@ class SQLQueryGenerator:
         Provide only the BigQuery SQL query as output. Do not include any explanations.
         """
 
+        Ensure the query strictly follows the schema without misinterpreting field names.
         Example format:
-        SELECT * FROM dev-kapture.demoDataset.assigned_to_resolve_report WHERE disposed_date BETWEEN TIMESTAMP('2025-01-22 00:00:00') AND TIMESTAMP('2025-01-22 23:59:59');
+        SELECT created_date FROM dev-kapture.demoDataset.assigned_to_resolve_report WHERE disposed_date BETWEEN TIMESTAMP('2025-01-22 00:00:00') AND TIMESTAMP('2025-01-22 23:59:59');
         """
 
         messages = [{"role": "user", "content": prompt}]
